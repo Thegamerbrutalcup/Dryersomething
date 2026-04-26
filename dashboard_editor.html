@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dryer Comparison — Editor (Internal)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --G:#1e6b3f;--G2:#2d8a52;--G3:#4aae75;--GP:#eaf5ef;--GM:#b8dfc8;
+  --T:#c4531a;--TP:#fdf0e8;--TM:#f0b894;
+  --S:#2563a8;--SP:#e8f0fb;--SM:#a8c4e8;
+  --BG:#f8faf9;--BG2:#f0f5f2;--W:#fff;--ST:#5a6e62;--INK:#172420;--BD:#d0e4d8;
+  --SH:0 2px 16px rgba(30,107,63,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--BG);color:var(--INK);min-height:100vh;font-size:13px;}
+
+/* TOP BAR */
+.topbar{background:linear-gradient(135deg,#0d3320,#1e6b3f 55%,#2d8a52);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.tl h1{font-family:'Playfair Display',serif;color:#fff;font-size:1.3rem;}
+.tl h1 em{color:#8fd4a8;font-style:italic;}
+.tl p{color:rgba(255,255,255,.5);font-size:.7rem;margin-top:2px;}
+.tb-btns{display:flex;gap:8px;align-items:center;}
+.btn{padding:9px 18px;border-radius:7px;font-family:'Inter',sans-serif;font-weight:600;font-size:.76rem;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;transition:all .18s;white-space:nowrap;}
+.btn-export{background:#8fd4a8;color:#0d3320;}
+.btn-export:hover{background:#fff;transform:translateY(-1px);}
+.btn-reset{background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2);}
+.btn-reset:hover{background:rgba(255,255,255,.2);}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 56px);}
+
+/* SIDEBAR */
+.sb{background:var(--W);border-right:1.5px solid var(--BD);overflow-y:auto;padding:16px 15px 40px;}
+.sb-sec{margin-bottom:18px;}
+.sb-title{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;color:var(--ST);padding:6px 9px;background:var(--BG2);border-radius:6px;margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+.f{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.f label{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ST);}
+.f input,.f textarea,.f select{padding:7px 10px;border:1.5px solid var(--BD);border-radius:6px;font-family:'Inter',sans-serif;font-size:.8rem;color:var(--INK);background:var(--BG);outline:none;width:100%;transition:border .15s,box-shadow .15s;}
+.f input:focus,.f textarea:focus,.f select:focus{border-color:var(--G3);box-shadow:0 0 0 3px rgba(74,174,117,.1);}
+.f textarea{resize:vertical;min-height:48px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.iw{position:relative;}
+.iw input{padding-right:36px;}
+.iw .u{position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:.6rem;font-weight:700;color:var(--ST);background:var(--BG2);padding:1px 4px;border-radius:3px;pointer-events:none;}
+.mblock{border-radius:9px;padding:10px;margin-bottom:8px;}
+.mblock.t{background:var(--TP);border:1.5px solid var(--TM);}
+.mblock.g{background:var(--GP);border:1.5px solid var(--GM);}
+.mblock.s{background:var(--SP);border:1.5px solid var(--SM);}
+.mbt{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;}
+.mblock.t .mbt{color:var(--T);}
+.mblock.g .mbt{color:var(--G);}
+.mblock.s .mbt{color:var(--S);}
+.ro-input{background:var(--BG2)!important;font-weight:700!important;cursor:default!important;}
+
+/* CURRENCY BLOCK */
+.curr-block{background:linear-gradient(135deg,#fffbf0,#fff8e1);border:1.5px solid #f0d87a;border-radius:9px;padding:11px;margin-bottom:10px;}
+.curr-title{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#8a6e00;margin-bottom:9px;}
+.curr-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:.75rem;}
+.curr-row label{width:80px;font-weight:600;color:var(--ST);flex-shrink:0;}
+.curr-row input{flex:1;padding:5px 8px;border:1.5px solid #e8d470;border-radius:5px;font-size:.78rem;font-family:'Inter',sans-serif;background:#fff;outline:none;}
+.curr-row input:focus{border-color:#c8a800;box-shadow:0 0 0 2px rgba(200,168,0,.12);}
+.curr-row .badge{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;}
+.badge-tk{background:#e8f5ee;color:var(--G);}
+.badge-inr{background:#fff0e6;color:#c4531a;}
+.badge-usd{background:#e8f0fb;color:#2563a8;}
+.badge-eur{background:#fefcf5;color:#9c27b0;}
+
+/* PREVIEW */
+.pv{overflow-y:auto;padding:18px 24px 50px;}
+.pv-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.pv-top h2{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--INK);}
+.live-dot{display:flex;align-items:center;gap:5px;font-size:.66rem;font-weight:700;color:var(--G2);background:var(--GP);border:1px solid var(--GM);padding:4px 10px;border-radius:999px;letter-spacing:.4px;}
+.live-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--G3);animation:bl 1.4s infinite;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+/* CURRENCY TOGGLE IN PREVIEW */
+.curr-toggle{display:flex;gap:5px;align-items:center;background:var(--BG2);padding:4px;border-radius:8px;border:1.5px solid var(--BD);}
+.curr-btn{padding:5px 12px;border-radius:5px;border:none;font-family:'Inter',sans-serif;font-size:.7rem;font-weight:700;cursor:pointer;background:transparent;color:var(--ST);transition:all .15s;}
+.curr-btn.active{background:var(--W);color:var(--INK);box-shadow:0 1px 6px rgba(0,0,0,.1);}
+
+/* MACHINE TABS */
+.mtabs{display:flex;gap:8px;margin-bottom:14px;}
+.mtab{flex:1;padding:9px 6px;border-radius:9px;border:2px solid transparent;cursor:pointer;text-align:center;transition:all .18s;background:var(--W);box-shadow:var(--SH);}
+.mtab:hover{transform:translateY(-1px);}
+.mtab .ti{font-size:1.1rem;margin-bottom:2px;}
+.mtab .tn{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.mtab .tv{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;margin-top:1px;}
+.mtab.t{border-color:var(--TM);background:var(--TP);}
+.mtab.t .tn,.mtab.t .tv{color:var(--T);}
+.mtab.g{border-color:var(--GM);background:var(--GP);}
+.mtab.g .tn,.mtab.g .tv{color:var(--G);}
+.mtab.s{border-color:var(--SM);background:var(--SP);}
+.mtab.s .tn,.mtab.s .tv{color:var(--S);}
+.mtab.active.t{border-color:var(--T);box-shadow:0 4px 18px rgba(196,83,26,.2);transform:translateY(-2px);}
+.mtab.active.g{border-color:var(--G);box-shadow:0 4px 18px rgba(30,107,63,.2);transform:translateY(-2px);}
+.mtab.active.s{border-color:var(--S);box-shadow:0 4px 18px rgba(37,99,168,.2);transform:translateY(-2px);}
+
+/* HIGHLIGHT PANEL */
+.hp{border-radius:12px;padding:16px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px;transition:all .25s;}
+.hp.t{background:linear-gradient(135deg,#fffaf6,var(--TP));border:2px solid var(--TM);}
+.hp.g{background:linear-gradient(135deg,#f5fbf7,var(--GP));border:2px solid var(--GM);}
+.hp.s{background:linear-gradient(135deg,#f5f8ff,var(--SP));border:2px solid var(--SM);}
+.hp-head{grid-column:1/-1;text-align:center;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,.06);margin-bottom:2px;}
+.hp-head h3{font-family:'Playfair Display',serif;font-size:1rem;}
+.hp-head p{font-size:.67rem;color:var(--ST);margin-top:2px;}
+.hp.t .hp-head h3{color:var(--T);}
+.hp.g .hp-head h3{color:var(--G);}
+.hp.s .hp-head h3{color:var(--S);}
+.hp-c{text-align:center;padding:9px 6px;background:rgba(255,255,255,.78);border-radius:8px;border:1px solid rgba(0,0,0,.05);}
+.hp-c .ic{font-size:1.2rem;margin-bottom:3px;}
+.hp-c .ht{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;}
+.hp-c .hv{font-family:'Playfair Display',serif;font-size:1rem;line-height:1.1;}
+.hp-c .hn{font-size:.58rem;color:var(--ST);margin-top:1px;}
+.hp.t .hp-c .ht{color:var(--T);}
+.hp.g .hp-c .ht{color:var(--G);}
+.hp.s .hp-c .ht{color:var(--S);}
+
+/* TABLE */
+.tc{background:var(--W);border-radius:12px;border:1.5px solid var(--BD);overflow:hidden;margin-bottom:14px;box-shadow:var(--SH);}
+table{width:100%;border-collapse:collapse;font-size:.75rem;}
+thead tr{background:#172420;}
+thead th{padding:10px 12px;text-align:left;font-size:.62rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;}
+th.bh{color:rgba(255,255,255,.45);}
+th.th-t{color:#f4a472;background:rgba(196,83,26,.35);}
+th.th-g{color:#8fd4a8;background:rgba(30,107,63,.5);}
+th.th-s{color:#a8c8f0;background:rgba(37,99,168,.3);}
+th.act-t{background:var(--T)!important;color:#fff!important;}
+th.act-g{background:var(--G)!important;color:#fff!important;}
+th.act-s{background:var(--S)!important;color:#fff!important;}
+tbody tr{border-bottom:1px solid var(--BG2);transition:background .1s;}
+tbody tr.sr td{background:var(--BG2);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--ST);padding:6px 12px;}
+tbody td{padding:9px 12px;vertical-align:top;line-height:1.5;}
+.rl{font-weight:600;color:var(--ST);font-size:.67rem;text-transform:uppercase;letter-spacing:.3px;width:155px;}
+.tdt{color:var(--T);font-weight:500;background:#fffaf7;}
+.tdg{color:var(--G);font-weight:600;background:#f5fbf7;}
+.tds{color:var(--S);font-weight:500;background:#f7f9fd;}
+.tdt.avc{background:var(--TP)!important;border-left:3px solid var(--T);border-right:3px solid var(--T);font-weight:700;}
+.tdg.avc{background:var(--GP)!important;border-left:3px solid var(--G);border-right:3px solid var(--G);font-weight:700;}
+.tds.avc{background:var(--SP)!important;border-left:3px solid var(--S);border-right:3px solid var(--S);font-weight:700;}
+
+/* BAR CHARTS */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.cc{background:var(--W);border-radius:12px;padding:15px;border:1.5px solid var(--BD);box-shadow:var(--SH);}
+.cc h4{font-size:.76rem;font-weight:700;color:var(--INK);margin-bottom:1px;}
+.cc p{font-size:.64rem;color:var(--ST);margin-bottom:11px;}
+.bg{display:flex;flex-direction:column;gap:8px;}
+.br{display:flex;align-items:center;gap:8px;}
+.bl{width:90px;font-size:.66rem;font-weight:600;text-align:right;flex-shrink:0;}
+.bl.t{color:var(--T);}
+.bl.g{color:var(--G);}
+.bl.s{color:var(--S);}
+.bt{flex:1;background:var(--BG2);border-radius:999px;height:20px;overflow:hidden;}
+.bf{height:100%;border-radius:999px;display:flex;align-items:center;justify-content:flex-end;padding-right:7px;font-size:.62rem;font-weight:700;color:#fff;min-width:26px;transition:width .85s cubic-bezier(.4,0,.2,1);}
+.bf.t{background:linear-gradient(90deg,#f4a472,var(--T));}
+.bf.g{background:linear-gradient(90deg,#6ec890,var(--G));}
+.bf.s{background:linear-gradient(90deg,#a8c8f0,var(--S));}
+.br.active-br .bl{font-size:.7rem;}
+.br.active-br .bf{filter:brightness(1.07);box-shadow:0 2px 8px rgba(0,0,0,.22);}
+.br.dimmed .bl{opacity:.35;}
+.br.dimmed .bf{filter:grayscale(.65);opacity:.45;}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr;}.charts-row{grid-template-columns:1fr;}.hp{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tl">
+    <h1>🌿 Dryer Comparison <em>— Internal Editor</em></h1>
+    <p>Internal use only · Configure all inputs · Preview live · Export locked customer copy</p>
+  </div>
+  <div class="tb-btns">
+    <button class="btn btn-reset" onclick="resetDef()">↺ Reset</button>
+    <button class="btn btn-export" onclick="exportReport()">📄 Export Customer Copy</button>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<div class="sb">
+
+  <div class="sb-sec">
+    <div class="sb-title">🏢 Your Company Info</div>
+    <div class="f"><label>Company Name</label><input type="text" id="i_company" value="Onyx Machinery Pvt. Ltd." oninput="update()"></div>
+    <div class="fr">
+      <div class="f"><label>Contact Person</label><input type="text" id="i_contact_name" value="Sales Team" oninput="update()"></div>
+      <div class="f"><label>Designation</label><input type="text" id="i_contact_desig" value="Sales Manager" oninput="update()"></div>
+    </div>
+    <div class="fr">
+      <div class="f"><label>Phone</label><input type="text" id="i_contact_phone" value="+91 98765 43210" oninput="update()"></div>
+      <div class="f"><label>Email</label><input type="email" id="i_contact_email" value="sales@onyxmachinery.com" oninput="update()"></div>
+    </div>
+    <div class="f"><label>Website</label><input type="text" id="i_company_web" value="www.onyxmachinery.com" oninput="update()"></div>
+    <div class="f"><label>Address</label><textarea id="i_company_addr" rows="2" oninput="update()">Surat, Gujarat, India</textarea></div>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-title">👤 Customer Details</div>
+    <div class="f"><label>Customer Company</label><input type="text" id="i_customer" value="Sangam India Limited" oninput="update()"></div>
+    <div class="fr">
+      <div class="f"><label>Contact Person</label><input type="text" id="i_cust_name" value="Mr. Rahul Sharma" oninput="update()"></div>
+      <div class="f"><label>Designation</label><input type="text" id="i_cust_desig" value="Production Manager" oninput="update()"></div>
+    </div>
+    <div class="fr">
+      <div class="f"><label>Phone</label><input type="text" id="i_cust_phone" value="+880 1700 000000" oninput="update()"></div>
+      <div class="f"><label>Email</label><input type="email" id="i_cust_email" value="rahul@sangamindia.com" oninput="update()"></div>
+    </div>
+    <div class="f"><label>Customer Address</label><textarea id="i_cust_addr" rows="2" oninput="update()">Dhaka, Bangladesh</textarea></div>
+    <div class="f"><label>Report Title</label><input type="text" id="i_title" value="Dryer Technology Cost Comparison" oninput="update()"></div>
+    <div class="fr">
+      <div class="f"><label>Date</label><input type="date" id="i_date" oninput="update()"></div>
+      <div class="f"><label>Ref / Quote No.</label><input type="text" id="i_ref" value="ONX-2026-001" oninput="update()"></div>
+    </div>
+    <div class="f"><label>Notes for Customer</label><textarea id="i_notes" rows="2" oninput="update()">All costs based on stated production volume. Actual savings may vary.</textarea></div>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-title">💱 Currency Conversions (Internal Use)</div>
+    <div class="curr-block">
+      <div class="curr-title">💱 Set Exchange Rates (Base: Indian Rupees)</div>
+      <div class="curr-row">
+        <label>1 INR =</label>
+        <input type="number" id="i_inr_to_tk" value="1.4286" step="0.001" min="0" oninput="update()">
+        <span class="badge badge-tk">TK</span>
+      </div>
+      <div class="curr-row">
+        <label>1 INR =</label>
+        <input type="number" id="i_inr_to_usd" value="0.013" step="0.0001" min="0" oninput="update()">
+        <span class="badge badge-usd">$ USD</span>
+      </div>
+      <div class="curr-row">
+        <label>1 INR =</label>
+        <input type="number" id="i_inr_to_eur" value="0.012" step="0.0001" min="0" oninput="update()">
+        <span class="badge badge-eur">€ EUR</span>
+      </div>
+      <div style="font-size:.62rem;color:var(--ST);margin-top:6px;padding-top:6px;border-top:1px solid #e8d470;">
+        ⚡ These rates appear only in your internal editor copy.<br>Customer copy shows TK only unless you set "Show currency in client copy" below.
+      </div>
+      <div class="f" style="margin-top:8px;margin-bottom:0;">
+        <label style="font-size:.62rem;">Show multi-currency in client copy?</label>
+        <select id="i_show_curr" oninput="update()" style="padding:5px 8px;font-size:.75rem;">
+          <option value="none">No — TK only</option>
+          <option value="inr">Yes — TK + INR</option>
+          <option value="usd">Yes — TK + USD</option>
+          <option value="eur">Yes — TK + EUR</option>
+          <option value="inr_eur">Yes — TK + INR + EUR</option>
+          <option value="usd_eur">Yes — TK + USD + EUR</option>
+          <option value="inr_usd">Yes — TK + INR + USD</option>
+          <option value="all">Yes — TK + INR + USD + EUR</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-title">⚙️ Baseline Parameters</div>
+    <div class="fr">
+      <div class="f"><label>Daily Production</label>
+        <div class="iw"><input type="number" id="i_prod" value="10000" min="1" oninput="update()"><span class="u">pcs</span></div>
+      </div>
+      <div class="f"><label>Working Days</label>
+        <div class="iw"><input type="number" id="i_days" value="26" min="1" max="31" oninput="update()"><span class="u">days</span></div>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="f"><label>Electricity Tariff</label>
+        <div class="iw"><input type="number" id="i_tariff" value="10.64" step="0.01" min="0" oninput="update()"><span class="u">TK/kWh</span></div>
+      </div>
+      <div class="f"><label>Steam Cost</label>
+        <div class="iw"><input type="number" id="i_stm_cost" value="2.00" step="0.01" min="0" oninput="update()"><span class="u">TK/kg</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-title">🔴 Tumble Dryer Specs</div>
+    <div class="mblock t">
+      <div class="mbt">🔴 Tumble Dryer</div>
+      <div class="f"><label>Description</label><input type="text" id="i_t_desc" value="300 Kg Tumble Dryer" oninput="update()"></div>
+      <div class="fr">
+        <div class="f"><label>Capacity/Hr</label>
+          <div class="iw"><input type="number" id="i_t_cap" value="230" min="1" oninput="update()"><span class="u">pcs</span></div>
+        </div>
+        <div class="f"><label>Elec. Load</label>
+          <div class="iw"><input type="number" id="i_t_kw" value="16" step="0.1" min="0" oninput="update()"><span class="u">KW</span></div>
+        </div>
+      </div>
+      <div class="f"><label>Steam Consumption</label>
+        <div class="iw"><input type="number" id="i_t_stm" value="300" min="0" oninput="update()"><span class="u">kg/hr</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-title">🟢 Green Dryer Specs</div>
+    <div class="mblock g">
+      <div class="mbt">🟢 Green Dryer</div>
+      <div class="f"><label>Description</label><input type="text" id="i_g_desc" value="12m Conveyorized Green Dryer" oninput="update()"></div>
+      <div class="fr">
+        <div class="f"><label>Capacity/Hr</label>
+          <div class="iw"><input type="number" id="i_g_cap" value="720" min="1" oninput="update()"><span class="u">pcs</span></div>
+        </div>
+        <div class="f"><label>Base Load</label>
+          <div class="iw"><input type="number" id="i_g_kw_base" value="10" step="0.1" oninput="update()"><span class="u">KW</span></div>
+        </div>
+      </div>
+      <div class="fr">
+        <div class="f"><label>+10Min Dry Load</label>
+          <div class="iw"><input type="number" id="i_g_kw_dry" value="16" step="0.1" oninput="update()"><span class="u">KW</span></div>
+        </div>
+        <div class="f"><label>Total (auto)</label>
+          <div class="iw"><input id="i_g_kw_tot" class="ro-input" readonly style="color:var(--G);font-weight:700;"><span class="u">KW</span></div>
+        </div>
+      </div>
+      <div class="fr">
+        <div class="f"><label>Base Steam</label>
+          <div class="iw"><input type="number" id="i_g_stm_base" value="300" min="0" oninput="update()"><span class="u">kg/hr</span></div>
+        </div>
+        <div class="f"><label>+10Min Steam</label>
+          <div class="iw"><input type="number" id="i_g_stm_dry" value="300" min="0" oninput="update()"><span class="u">kg/hr</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-title">🔵 Sustainable Dryer Specs</div>
+    <div class="mblock s">
+      <div class="mbt">🔵 Sustainable / Line Drying</div>
+      <div class="f"><label>Description</label><input type="text" id="i_s_desc" value="300m Line Drying Conveyor" oninput="update()"></div>
+      <div class="fr">
+        <div class="f"><label>Capacity/Hr</label>
+          <div class="iw"><input type="number" id="i_s_cap" value="600" min="1" oninput="update()"><span class="u">pcs</span></div>
+        </div>
+        <div class="f"><label>Base Load</label>
+          <div class="iw"><input type="number" id="i_s_kw_base" value="2.5" step="0.1" oninput="update()"><span class="u">KW</span></div>
+        </div>
+      </div>
+      <div class="fr">
+        <div class="f"><label>+10Min Dry Load</label>
+          <div class="iw"><input type="number" id="i_s_kw_dry" value="16" step="0.1" oninput="update()"><span class="u">KW</span></div>
+        </div>
+        <div class="f"><label>Total (auto)</label>
+          <div class="iw"><input id="i_s_kw_tot" class="ro-input" readonly style="color:var(--S);font-weight:700;"><span class="u">KW</span></div>
+        </div>
+      </div>
+      <div class="f"><label>Steam (10-min dry)</label>
+        <div class="iw"><input type="number" id="i_s_stm" value="300" min="0" oninput="update()"><span class="u">kg/hr</span></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-reset" style="width:100%;justify-content:center;background:var(--BG2);color:var(--ST);border:1.5px solid var(--BD);" onclick="resetDef()">↺ Reset All to Defaults</button>
+</div><!-- /sb -->
+
+<!-- ═══════════════════ PREVIEW ═══════════════════ -->
+<div class="pv">
+  <div class="pv-top">
+    <div>
+      <h2>Internal Preview — All Currencies</h2>
+      <div style="font-size:.68rem;color:var(--ST);margin-top:2px;">Values shown in selected currency below. Customer copy uses setting from sidebar.</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <div class="curr-toggle">
+        <button class="curr-btn" onclick="setCurr('tk',this)">🇧🇩 TK</button>
+        <button class="curr-btn active" onclick="setCurr('inr',this)">🇮🇳 ₹ INR</button>
+        <button class="curr-btn" onclick="setCurr('usd',this)">🇺🇸 $ USD</button>
+        <button class="curr-btn" onclick="setCurr('eur',this)">🇪🇺 € EUR</button>
+      </div>
+      <span class="live-dot">LIVE</span>
+    </div>
+  </div>
+
+  <!-- CURRENCY INFO BAR -->
+  <div id="curr_bar" style="background:linear-gradient(135deg,#fffbf0,#fff8e1);border:1.5px solid #f0d87a;border-radius:8px;padding:8px 14px;margin-bottom:12px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+    <span style="font-size:.68rem;font-weight:700;color:#8a6e00;">💱 Active Rates:</span>
+    <span id="rate_inr_bar" style="font-size:.7rem;color:var(--T);">1 INR = — TK</span>
+    <span id="rate_usd_bar" style="font-size:.7rem;color:var(--S);">1 INR = $—</span>
+    <span id="rate_eur_bar" style="font-size:.7rem;color:var(--S);">1 INR = €—</span>
+    <span id="curr_showing" style="font-size:.68rem;font-weight:700;background:var(--GP);color:var(--G);padding:2px 8px;border-radius:4px;margin-left:auto;">Showing: TK</span>
+  </div>
+
+  <!-- MACHINE TABS -->
+  <div class="mtabs">
+    <div class="mtab t active" onclick="selMachine('t')">
+      <div class="ti">🔴</div><div class="tn">Tumble Dryer</div>
+      <div class="tv" id="tab_t">—</div>
+      <div style="font-size:.58rem;color:var(--T);">per garment</div>
+    </div>
+    <div class="mtab g" onclick="selMachine('g')">
+      <div class="ti">🟢</div><div class="tn">Green Dryer</div>
+      <div class="tv" id="tab_g">—</div>
+      <div style="font-size:.58rem;color:var(--G);">per garment</div>
+    </div>
+    <div class="mtab s" onclick="selMachine('s')">
+      <div class="ti">🔵</div><div class="tn">Sustainable</div>
+      <div class="tv" id="tab_s">—</div>
+      <div style="font-size:.58rem;color:var(--S);">per garment</div>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHT PANEL -->
+  <div class="hp t" id="hp">
+    <div class="hp-head">
+      <h3 id="hp_title">🔴 Tumble Dryer — Key Parameters</h3>
+      <p id="hp_sub">300 Kg Tumble Dryer</p>
+    </div>
+    <div class="hp-c"><div class="ic">📦</div><div class="ht">Capacity/Hr</div><div class="hv" id="hp_cap">—</div><div class="hn">pcs/hour</div></div>
+    <div class="hp-c"><div class="ic">⚡</div><div class="ht">Total KW</div><div class="hv" id="hp_kw">—</div><div class="hn">KW load</div></div>
+    <div class="hp-c"><div class="ic">💡</div><div class="ht">Elec/Garment</div><div class="hv" id="hp_elec">—</div><div class="hn">per piece</div></div>
+    <div class="hp-c"><div class="ic">♨️</div><div class="ht">Steam/Garment</div><div class="hv" id="hp_stm">—</div><div class="hn">per piece</div></div>
+    <div class="hp-c"><div class="ic">📅</div><div class="ht">Daily Cost</div><div class="hv" id="hp_daily">—</div><div class="hn">total/day</div></div>
+    <div class="hp-c"><div class="ic">📊</div><div class="ht">Monthly Cost</div><div class="hv" id="hp_monthly">—</div><div class="hn">total/month</div></div>
+    <div class="hp-c"><div class="ic">💰</div><div class="ht">Daily Saving</div><div class="hv" id="hp_save_d">—</div><div class="hn">vs Tumble</div></div>
+    <div class="hp-c"><div class="ic">🏆</div><div class="ht">Monthly Saving</div><div class="hv" id="hp_save_m">—</div><div class="hn">vs Tumble</div></div>
+  </div>
+
+  <!-- FULL TABLE -->
+  <div class="tc">
+    <table>
+      <thead><tr>
+        <th class="bh" style="width:150px">Parameter</th>
+        <th class="th-t" id="th_t">🔴 Tumble Dryer</th>
+        <th class="th-g" id="th_g">🟢 Green Dryer</th>
+        <th class="th-s" id="th_s">🔵 Sustainable</th>
+      </tr></thead>
+      <tbody>
+        <tr class="sr"><td colspan="4">⚙️ Capacity</td></tr>
+        <tr><td class="rl">Daily Production</td><td class="tdt" id="tb_t_prod">—</td><td class="tdg" id="tb_g_prod">—</td><td class="tds" id="tb_s_prod">—</td></tr>
+        <tr><td class="rl">Capacity/Hour</td><td class="tdt" id="tb_t_cap">—</td><td class="tdg" id="tb_g_cap">—</td><td class="tds" id="tb_s_cap">—</td></tr>
+        <tr class="sr"><td colspan="4">⚡ Electricity (KW × TK/kWh ÷ pcs/hr)</td></tr>
+        <tr><td class="rl">Base Load</td><td class="tdt" id="tb_t_kwb">—</td><td class="tdg" id="tb_g_kwb">—</td><td class="tds" id="tb_s_kwb">—</td></tr>
+        <tr><td class="rl">+10Min Dry Load</td><td class="tdt">—</td><td class="tdg" id="tb_g_kwd">—</td><td class="tds" id="tb_s_kwd">—</td></tr>
+        <tr><td class="rl">Total Load</td><td class="tdt" id="tb_t_kw">—</td><td class="tdg" id="tb_g_kw">—</td><td class="tds" id="tb_s_kw">—</td></tr>
+        <tr><td class="rl">Cost/Hr Formula</td><td class="tdt" id="tb_t_f">—</td><td class="tdg" id="tb_g_f">—</td><td class="tds" id="tb_s_f">—</td></tr>
+        <tr><td class="rl">Elec. Cost/Garment</td><td class="tdt" id="tb_t_epg">—</td><td class="tdg" id="tb_g_epg">—</td><td class="tds" id="tb_s_epg">—</td></tr>
+        <tr><td class="rl">Daily Elec. Cost</td><td class="tdt" id="tb_t_ed">—</td><td class="tdg" id="tb_g_ed">—</td><td class="tds" id="tb_s_ed">—</td></tr>
+        <tr><td class="rl">Daily Elec. Saving</td><td class="tdt">NIL</td><td class="tdg" id="tb_g_es">—</td><td class="tds" id="tb_s_es">—</td></tr>
+        <tr><td class="rl">Monthly Elec. Saving</td><td class="tdt">NIL</td><td class="tdg" id="tb_g_ems">—</td><td class="tds" id="tb_s_ems">—</td></tr>
+        <tr class="sr"><td colspan="4">♨️ Steam (kg/hr ÷ pcs/hr × TK/kg)</td></tr>
+        <tr><td class="rl">Steam/Hour</td><td class="tdt" id="tb_t_shr">—</td><td class="tdg" id="tb_g_shr">—</td><td class="tds" id="tb_s_shr">—</td></tr>
+        <tr><td class="rl">Steam/Garment</td><td class="tdt" id="tb_t_spg">—</td><td class="tdg" id="tb_g_spg">—</td><td class="tds" id="tb_s_spg">—</td></tr>
+        <tr><td class="rl">Steam Cost/Garment</td><td class="tdt" id="tb_t_scpg">—</td><td class="tdg" id="tb_g_scpg">—</td><td class="tds" id="tb_s_scpg">—</td></tr>
+        <tr><td class="rl">Daily Steam Cost</td><td class="tdt" id="tb_t_sd">—</td><td class="tdg" id="tb_g_sd">—</td><td class="tds" id="tb_s_sd">—</td></tr>
+        <tr><td class="rl">Daily Steam Saving</td><td class="tdt">NIL</td><td class="tdg" id="tb_g_ss">—</td><td class="tds" id="tb_s_ss">—</td></tr>
+        <tr><td class="rl">Monthly Steam Saving</td><td class="tdt">NIL</td><td class="tdg" id="tb_g_sms">—</td><td class="tds" id="tb_s_sms">—</td></tr>
+        <tr class="sr"><td colspan="4">💰 Total Monthly Savings vs Tumble</td></tr>
+        <tr>
+          <td class="rl">Combined Saving</td>
+          <td class="tdt" style="font-weight:700;">BASELINE</td>
+          <td class="tdg" id="tb_g_tot" style="font-size:.82rem;font-weight:800;">—</td>
+          <td class="tds" id="tb_s_tot" style="font-weight:700;">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row">
+    <div class="cc"><h4>Elec. Cost / Garment</h4><p id="ch_elec_sub">—</p><div class="bg" id="ch_elec"></div></div>
+    <div class="cc"><h4>Steam Cost / Garment</h4><p id="ch_stm_sub">—</p><div class="bg" id="ch_stm"></div></div>
+    <div class="cc"><h4>Throughput (pcs/hr)</h4><p>Higher is better</p><div class="bg" id="ch_cap"></div></div>
+    <div class="cc"><h4>Monthly Savings vs Tumble</h4><p id="ch_sav_sub">—</p><div class="bg" id="ch_sav"></div></div>
+  </div>
+
+</div><!-- /pv -->
+</div><!-- /layout -->
+
+<script>
+// ── GLOBALS ──────────────────────────────────────────────
+var AM = 't';          // active machine
+var CURR = 'inr';       // active currency display
+var C = null;          // last calculated data
+
+// ── HELPERS ──────────────────────────────────────────────
+const gv = id => parseFloat(document.getElementById(id)?.value)||0;
+const gs = id => document.getElementById(id)?.value||'';
+const st = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+const f2 = n => Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const f0 = n => Math.round(n).toLocaleString('en-IN');
+const f3 = n => Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:4});
+
+function convFmt(tkVal, decimals) {
+  const rate_inr = gv('i_inr_to_tk');
+  const rate_usd = gv('i_inr_to_usd');
+  const rate_eur = gv('i_inr_to_eur');
+  const d = decimals !== undefined ? decimals : (Math.abs(tkVal) < 100 ? 2 : 0);
+  if(CURR==='inr') {
+    const v = tkVal / rate_inr;
+    return '₹' + (d===0 ? f0(v) : f2(v));
+  } else if(CURR==='usd') {
+    const v = tkVal * (rate_usd / rate_inr);
+    return '$' + Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  } else if(CURR==='eur') {
+    const v = tkVal * (rate_eur / rate_inr);
+    return '€' + (d===0 ? f0(v) : f2(v));
+  }
+  return 'TK ' + (d===0 ? f0(tkVal) : f2(tkVal));
+}
+function convFmtPg(tkVal) { // for per-garment (4 decimals if USD)
+  const rate_inr = gv('i_inr_to_tk');
+  const rate_usd = gv('i_inr_to_usd');
+  const rate_eur = gv('i_inr_to_eur');
+  if(CURR==='inr') return '₹' + f2(tkVal / rate_inr);
+  if(CURR==='usd') return '$' + Number(tkVal * (rate_usd / rate_inr)).toLocaleString('en-US',{minimumFractionDigits:4,maximumFractionDigits:4});
+  if(CURR==='eur') return '€' + Number(tkVal * (rate_eur / rate_inr)).toLocaleString('en-US',{minimumFractionDigits:4,maximumFractionDigits:4});
+  return 'TK ' + f2(tkVal);
+}
+function currLabel() {
+  return CURR==='inr'?'₹ INR':CURR==='usd'?'$ USD':CURR==='eur'?'€ EUR':'TK';
+}
+
+// ── CALCULATE (Excel exact) ───────────────────────────────
+function calc() {
+  const prod = gv('i_prod'), days = gv('i_days');
+  const tariff = gv('i_tariff'), sc = gv('i_stm_cost');
+
+  const t_cap=gv('i_t_cap'), t_kw=gv('i_t_kw'), t_stm=gv('i_t_stm');
+  const g_cap=gv('i_g_cap'), g_kwb=gv('i_g_kw_base'), g_kwd=gv('i_g_kw_dry');
+  const g_kwt=g_kwb+g_kwd, g_stmb=gv('i_g_stm_base'), g_stmd=gv('i_g_stm_dry'), g_stm=g_stmb+g_stmd;
+  const s_cap=gv('i_s_cap'), s_kwb=gv('i_s_kw_base'), s_kwd=gv('i_s_kw_dry');
+  const s_kwt=s_kwb+s_kwd, s_stm=gv('i_s_stm');
+
+  document.getElementById('i_g_kw_tot').value = f2(g_kwt)+' KW';
+  document.getElementById('i_s_kw_tot').value = f2(s_kwt)+' KW';
+
+  // Elec cost/hr
+  const t_ehr=t_kw*tariff, g_ehr=g_kwt*tariff, s_ehr=s_kwt*tariff;
+  // Elec cost/garment
+  const t_epg=t_cap>0?t_ehr/t_cap:0, g_epg=g_cap>0?g_ehr/g_cap:0, s_epg=s_cap>0?s_ehr/s_cap:0;
+  // Daily elec
+  const t_ed=t_epg*prod, g_ed=g_epg*prod, s_ed=s_epg*prod;
+  // Elec savings
+  const g_es=t_ed-g_ed, s_es=t_ed-s_ed;
+  const g_ems=g_es*days, s_ems=s_es*days;
+
+  // Steam/garment (kg)
+  const t_spg=t_cap>0?t_stm/t_cap:0, g_spg=g_cap>0?g_stm/g_cap:0, s_spg=s_cap>0?s_stm/s_cap:0;
+  // Steam cost/garment
+  const t_scpg=t_spg*sc, g_scpg=g_spg*sc, s_scpg=s_spg*sc;
+  // Daily steam
+  const t_sd=t_scpg*prod, g_sd=g_scpg*prod, s_sd=s_scpg*prod;
+  // Steam savings
+  const g_ss=t_sd-g_sd, s_ss=t_sd-s_sd;
+  const g_sms=g_ss*days, s_sms=s_ss*days;
+
+  // Totals
+  const t_td=t_ed+t_sd, g_td=g_ed+g_sd, s_td=s_ed+s_sd;
+  const t_tm=t_td*days, g_tm=g_td*days, s_tm=s_td*days;
+  const g_svd=t_td-g_td, s_svd=t_td-s_td;
+  const g_svm=g_ems+g_sms, s_svm=s_ems+s_sms;
+
+  return {prod,days,tariff,sc,
+    t_cap,t_kw,t_stm, g_cap,g_kwb,g_kwd,g_kwt,g_stmb,g_stmd,g_stm, s_cap,s_kwb,s_kwd,s_kwt,s_stm,
+    t_ehr,g_ehr,s_ehr, t_epg,g_epg,s_epg, t_ed,g_ed,s_ed, g_es,s_es, g_ems,s_ems,
+    t_spg,g_spg,s_spg, t_scpg,g_scpg,s_scpg, t_sd,g_sd,s_sd, g_ss,s_ss, g_sms,s_sms,
+    t_td,g_td,s_td, t_tm,g_tm,s_tm, g_svd,s_svd, g_svm,s_svm
+  };
+}
+
+// ── UPDATE PREVIEW ─────────────────────────────────────
+function update() {
+  C = calc();
+  const c = C;
+  const cl = currLabel();
+  // Rate bar
+  st('rate_inr_bar','1 INR = '+f2(gv('i_inr_to_tk'))+' TK');
+  st('rate_usd_bar','1 INR = $'+f3(gv('i_inr_to_usd')));
+  st('rate_eur_bar','1 INR = €'+f2(gv('i_inr_to_eur')));
+  st('curr_showing','Showing: '+cl);
+  document.getElementById('ch_elec_sub').textContent = 'Lower is better · '+cl;
+  document.getElementById('ch_stm_sub').textContent  = 'Lower is better · '+cl;
+  document.getElementById('ch_sav_sub').textContent  = f0(c.days)+' days · '+cl;
+
+  // Tabs
+  st('tab_t', convFmtPg(c.t_epg));
+  st('tab_g', convFmtPg(c.g_epg));
+  st('tab_s', convFmtPg(c.s_epg));
+
+  // TABLE rows
+  const pd=f0(c.prod)+' Denims/Day';
+  st('tb_t_prod',pd); st('tb_g_prod',pd); st('tb_s_prod',pd);
+  st('tb_t_cap',f0(c.t_cap)+' pcs/hr'); st('tb_g_cap',f0(c.g_cap)+' pcs/hr'); st('tb_s_cap',f0(c.s_cap)+' pcs/hr');
+  st('tb_t_kwb',f2(c.t_kw)+' KW'); st('tb_g_kwb',f2(c.g_kwb)+' KW base'); st('tb_s_kwb',f2(c.s_kwb)+' KW base');
+  st('tb_g_kwd','+'+f2(c.g_kwd)+' KW'); st('tb_s_kwd','+'+f2(c.s_kwd)+' KW');
+  st('tb_t_kw',f2(c.t_kw)+' KW'); st('tb_g_kw',f2(c.g_kwt)+' KW'); st('tb_s_kw',f2(c.s_kwt)+' KW');
+  st('tb_t_f',f2(c.t_kw)+'×'+f2(c.tariff)+'=TK'+f2(c.t_ehr)+'/hr');
+  st('tb_g_f',f2(c.g_kwt)+'×'+f2(c.tariff)+'=TK'+f2(c.g_ehr)+'/hr');
+  st('tb_s_f',f2(c.s_kwt)+'×'+f2(c.tariff)+'=TK'+f2(c.s_ehr)+'/hr');
+  st('tb_t_epg',convFmtPg(c.t_epg)+'/pcs'); st('tb_g_epg',convFmtPg(c.g_epg)+'/pcs'); st('tb_s_epg',convFmtPg(c.s_epg)+'/pcs');
+  st('tb_t_ed',convFmt(c.t_ed,0)); st('tb_g_ed',convFmt(c.g_ed,0)); st('tb_s_ed',convFmt(c.s_ed,0));
+  st('tb_g_es','✅ '+convFmt(c.g_es,0)+'/Day'); st('tb_s_es',convFmt(c.s_es,0)+'/Day');
+  st('tb_g_ems','✅ '+convFmt(c.g_ems,0)); st('tb_s_ems',convFmt(c.s_ems,0));
+  st('tb_t_shr',f0(c.t_stm)+' kg/hr'); st('tb_g_shr',f0(c.g_stmb)+'+'+f0(c.g_stmd)+'='+f0(c.g_stm)+' kg/hr'); st('tb_s_shr',f0(c.s_stm)+' kg/hr');
+  st('tb_t_spg',f2(c.t_spg)+' kg'); st('tb_g_spg',f2(c.g_spg)+' kg'); st('tb_s_spg',f2(c.s_spg)+' kg');
+  st('tb_t_scpg',convFmtPg(c.t_scpg)); st('tb_g_scpg',convFmtPg(c.g_scpg)); st('tb_s_scpg',convFmtPg(c.s_scpg));
+  st('tb_t_sd',convFmt(c.t_sd,0)); st('tb_g_sd',convFmt(c.g_sd,0)); st('tb_s_sd',convFmt(c.s_sd,0));
+  st('tb_g_ss','✅ '+convFmt(c.g_ss,0)+'/Day'); st('tb_s_ss',convFmt(c.s_ss,0)+'/Day');
+  st('tb_g_sms','✅ '+convFmt(c.g_sms,0)); st('tb_s_sms',convFmt(c.s_sms,0));
+  st('tb_g_tot','🏆 '+convFmt(c.g_svm,0)); st('tb_s_tot',convFmt(c.s_svm,0));
+
+  // Charts
+  renderBars('ch_elec',[{l:'Tumble',c:'t',v:c.t_epg},{l:'Green',c:'g',v:c.g_epg},{l:'Sustain.',c:'s',v:c.s_epg}],true);
+  renderBars('ch_stm', [{l:'Tumble',c:'t',v:c.t_scpg},{l:'Green',c:'g',v:c.g_scpg},{l:'Sustain.',c:'s',v:c.s_scpg}],true);
+  renderBars('ch_cap', [{l:'Tumble',c:'t',v:c.t_cap},{l:'Green',c:'g',v:c.g_cap},{l:'Sustain.',c:'s',v:c.s_cap}],false);
+  renderBars('ch_sav', [{l:'Tumble',c:'t',v:0},{l:'Green',c:'g',v:c.g_svm},{l:'Sustain.',c:'s',v:c.s_svm}],true);
+
+  selMachine(AM, true);
+}
+
+function renderBars(id, rows, isCurr) {
+  const el = document.getElementById(id); if(!el) return;
+  const mx = Math.max(...rows.map(r=>r.v), 0.001);
+  el.innerHTML = rows.map(r=>{
+    const pct = r.v>0 ? Math.max((r.v/mx)*100, 4) : 2;
+    const dimmed = AM && r.c!==AM ? ' dimmed':'';
+    const active = AM && r.c===AM ? ' active-br':'';
+    const label = isCurr ? (r.v>0?convFmt(r.v):convFmt(0)) : (r.v>0?f0(r.v):'NIL');
+    return `<div class="br${active}${dimmed}"><div class="bl ${r.c}">${r.l}</div><div class="bt"><div class="bf ${r.c}" style="width:${pct}%">${label}</div></div></div>`;
+  }).join('');
+}
+
+// ── MACHINE SELECTOR ─────────────────────────────────────
+function selMachine(m, silent) {
+  AM = m;
+  document.querySelectorAll('.mtab').forEach(e=>e.classList.remove('active'));
+  document.querySelector('.mtab.'+m)?.classList.add('active');
+  document.getElementById('hp').className='hp '+m;
+  // Table headers
+  const hmap={t:'th-t',g:'th-g',s:'th-s'};
+  ['t','g','s'].forEach(x=>{
+    const el=document.getElementById('th_'+x);
+    if(el) el.className = x===m ? 'act-'+m : hmap[x];
+  });
+  // Active columns
+  document.querySelectorAll('.tdt,.tdg,.tds').forEach(e=>e.classList.remove('avc'));
+  document.querySelectorAll('.td'+m).forEach(e=>e.classList.add('avc'));
+
+  const c = C||calc();
+  const cl = currLabel();
+  const titles={
+    t:{title:'🔴 Tumble Dryer — Key Parameters',sub:gs('i_t_desc'),cap:f0(c.t_cap),kw:f2(c.t_kw),elec:convFmtPg(c.t_epg),stm:convFmtPg(c.t_scpg),daily:convFmt(c.t_td,0),monthly:convFmt(c.t_tm,0),save_d:'NIL (Baseline)',save_m:'NIL (Baseline)'},
+    g:{title:'🟢 Green Dryer — Key Parameters',sub:gs('i_g_desc')+' · '+f2(c.g_kwt)+' KW',cap:f0(c.g_cap),kw:f2(c.g_kwt),elec:convFmtPg(c.g_epg),stm:convFmtPg(c.g_scpg),daily:convFmt(c.g_td,0),monthly:convFmt(c.g_tm,0),save_d:'✅ '+convFmt(c.g_svd,0)+'/day',save_m:'🏆 '+convFmt(c.g_svm,0)},
+    s:{title:'🔵 Sustainable Dryer — Key Parameters',sub:gs('i_s_desc')+' · '+f2(c.s_kwt)+' KW',cap:f0(c.s_cap),kw:f2(c.s_kwt),elec:convFmtPg(c.s_epg),stm:convFmtPg(c.s_scpg),daily:convFmt(c.s_td,0),monthly:convFmt(c.s_tm,0),save_d:convFmt(c.s_svd,0)+'/day',save_m:convFmt(c.s_svm,0)}
+  }[m];
+  st('hp_title',titles.title); st('hp_sub',titles.sub);
+  st('hp_cap',titles.cap); st('hp_kw',titles.kw);
+  st('hp_elec',titles.elec); st('hp_stm',titles.stm);
+  st('hp_daily',titles.daily); st('hp_monthly',titles.monthly);
+  st('hp_save_d',titles.save_d); st('hp_save_m',titles.save_m);
+
+  if(!silent) {
+    renderBars('ch_elec',[{l:'Tumble',c:'t',v:c.t_epg},{l:'Green',c:'g',v:c.g_epg},{l:'Sustain.',c:'s',v:c.s_epg}],true);
+    renderBars('ch_stm', [{l:'Tumble',c:'t',v:c.t_scpg},{l:'Green',c:'g',v:c.g_scpg},{l:'Sustain.',c:'s',v:c.s_scpg}],true);
+    renderBars('ch_cap', [{l:'Tumble',c:'t',v:c.t_cap},{l:'Green',c:'g',v:c.g_cap},{l:'Sustain.',c:'s',v:c.s_cap}],false);
+    renderBars('ch_sav', [{l:'Tumble',c:'t',v:0},{l:'Green',c:'g',v:c.g_svm},{l:'Sustain.',c:'s',v:c.s_svm}],true);
+  }
+}
+
+// ── CURRENCY TOGGLE ───────────────────────────────────────
+function setCurr(cur, btn) {
+  CURR = cur;
+  document.querySelectorAll('.curr-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  update();
+}
+
+// ── RESET ─────────────────────────────────────────────────
+function resetDef() {
+  const D={
+    i_company:'Onyx Machinery Pvt. Ltd.',i_contact_name:'Sales Team',i_contact_desig:'Sales Manager',
+    i_contact_phone:'+91 98765 43210',i_contact_email:'sales@onyxmachinery.com',
+    i_company_web:'www.onyxmachinery.com',i_company_addr:'Surat, Gujarat, India',
+    i_customer:'Sangam India Limited',i_cust_name:'Mr. Rahul Sharma',i_cust_desig:'Production Manager',
+    i_cust_phone:'+880 1700 000000',i_cust_email:'rahul@sangamindia.com',
+    i_cust_addr:'Dhaka, Bangladesh',i_title:'Dryer Technology Cost Comparison',
+    i_ref:'ONX-2026-001',i_notes:'All costs based on stated production volume. Actual savings may vary.',
+    i_inr_to_tk:1.4286,i_inr_to_usd:0.013,i_inr_to_eur:0.012,i_show_curr:'none',
+    i_prod:10000,i_days:26,i_tariff:10.64,i_stm_cost:2.00,
+    i_t_desc:'300 Kg Tumble Dryer',i_t_cap:230,i_t_kw:16,i_t_stm:300,
+    i_g_desc:'12m Conveyorized Green Dryer',i_g_cap:720,i_g_kw_base:10,i_g_kw_dry:16,i_g_stm_base:300,i_g_stm_dry:300,
+    i_s_desc:'300m Line Drying Conveyor',i_s_cap:600,i_s_kw_base:2.5,i_s_kw_dry:16,i_s_stm:300,
+  };
+  Object.entries(D).forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.value=v;});
+  document.getElementById('i_date').value=new Date().toISOString().slice(0,10);
+  CURR='inr'; AM='t';
+  document.querySelectorAll('.curr-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.curr-btn[onclick*="inr"]').classList.add('active');
+  update(); selMachine('t');
+}
+
+// ── EXPORT CUSTOMER REPORT ────────────────────────────────
+function exportReport() {
+  const c = C || calc();
+  const showCurr = gs('i_show_curr'); // 'none','inr','usd','eur','inr_eur','usd_eur','all'
+  const rate_inr = gv('i_inr_to_tk');
+  const rate_usd = gv('i_inr_to_usd');
+  const rate_eur = gv('i_inr_to_eur');
+
+  // Format functions for client report
+  // Determine currency to display in customer report: follow main currency selection (CURR)
+  // with fallback to i_show_curr for backward compatibility
+  const dispCurr = showCurr !== 'none' ? showCurr : CURR;
+
+  function cf(tkVal, d) {  // currency format for client
+    const dec = d!==undefined ? d : (Math.abs(tkVal)<100?2:0);
+    const tk = dec===0?'TK '+f0(tkVal):'TK '+f2(tkVal);
+    if(dispCurr==='none') return tk;
+    const inr = '₹'+f2(tkVal/rate_inr);
+    const usd = '$'+Number(tkVal*(rate_usd/rate_inr)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const eur = '€'+f2(tkVal*(rate_eur/rate_inr));
+    if(dispCurr==='inr') return tk+' ('+inr+')';
+    if(dispCurr==='usd') return tk+' ('+usd+')';
+    if(dispCurr==='eur') return tk+' ('+eur+')';
+    if(dispCurr==='inr_eur') return tk+' ('+inr+' / '+eur+')';
+    if(dispCurr==='usd_eur') return tk+' ('+usd+' / '+eur+')';
+    if(dispCurr==='inr_usd') return tk+' / '+inr+' / '+usd;
+    if(dispCurr==='all') return tk+' / '+inr+' / '+usd+' / '+eur;
+    return tk;
+  }
+  function cpg(tkVal) {
+    const tk='TK '+f2(tkVal);
+    if(dispCurr==='none') return tk;
+    const inr='₹'+f2(tkVal/rate_inr);
+    const usd='$'+Number(tkVal*(rate_usd/rate_inr)).toLocaleString('en-US',{minimumFractionDigits:4,maximumFractionDigits:4});
+    const eur='€'+f2(tkVal*(rate_eur/rate_inr));
+    if(dispCurr==='inr') return tk+' ('+inr+')';
+    if(dispCurr==='usd') return tk+' ('+usd+')';
+    if(dispCurr==='eur') return tk+' ('+eur+')';
+    if(dispCurr==='inr_eur') return tk+' ('+inr+' / '+eur+')';
+    if(dispCurr==='usd_eur') return tk+' ('+usd+' / '+eur+')';
+    if(dispCurr==='inr_usd') return tk+' / '+inr+' / '+usd;
+    if(dispCurr==='all') return tk+' / '+inr+' / '+usd+' / '+eur;
+    return tk;
+  }
+
+  const co=gs('i_company'), cname=gs('i_contact_name'), cdesig=gs('i_contact_desig');
+  const cphone=gs('i_contact_phone'), cemail=gs('i_contact_email');
+  const cweb=gs('i_company_web'), caddr=gs('i_company_addr');
+  const cu=gs('i_customer'), cuname=gs('i_cust_name'), cudesig=gs('i_cust_desig');
+  const cuphone=gs('i_cust_phone'), cuemail=gs('i_cust_email'), cuaddr=gs('i_cust_addr');
+  const title=gs('i_title'), ref=gs('i_ref'), notes=gs('i_notes');
+  const dateVal=gs('i_date');
+  const dateStr=dateVal?new Date(dateVal).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const t_desc=gs('i_t_desc'), g_desc=gs('i_g_desc'), s_desc=gs('i_s_desc');
+
+  // Generate currency note based on display currency (following main selection with fallback)
+const dispCurrNote = dispCurr==='none'?'All values in Bangladeshi Taka (TK)':
+    dispCurr==='inr'?`TK + ₹ INR (Rate: 1 TK = ₹${f2(1/rate_inr)} INR)`:
+    dispCurr==='usd'?`TK + $ USD (Rate: 1 TK = $${f2(rate_usd/rate_inr)} USD)`:
+    dispCurr==='eur'?`TK + € EUR (Rate: 1 TK = €${f2(rate_eur/rate_inr)} EUR)`:
+    dispCurr==='inr_eur'?`TK + ₹ INR + € EUR (Rate: 1 TK = ₹${f2(1/rate_inr)} INR / €${f2(rate_eur/rate_inr)} EUR)`:
+    dispCurr==='usd_eur'?`TK + $ USD + € EUR (Rate: 1 TK = $${f2(rate_usd/rate_inr)} USD / €${f2(rate_eur/rate_inr)} EUR)`:
+    dispCurr==='inr_usd'?`TK + ₹ INR / $ USD (1 TK=₹${f2(1/rate_inr)} INR) / $ USD (1 TK=$${f2(rate_usd/rate_inr)} USD)`:
+    `TK + ₹ INR + $ USD + € EUR (1 TK=₹${f2(1/rate_inr)} INR) / $ USD (1 TK=$${f2(rate_usd/rate_inr)} USD) / € EUR (1 TK=€${f2(rate_eur/rate_inr)} EUR)`;
+const currNote = dispCurrNote;
+
+  // SVG bar helper for client
+  function svgBar(rows) {
+    const mx=Math.max(...rows.map(r=>r.v),0.001);
+    const H=rows.length*44+10;
+    const CM={t:'#c4531a',g:'#1e6b3f',s:'#2563a8'};
+    let o='';
+    rows.forEach((r,i)=>{
+      const pct=r.v>0?Math.max((r.v/mx)*440,14):3;
+      const y=i*44+6;
+      o+=`<rect x="110" y="${y}" width="440" height="28" rx="5" fill="#f0f5f2"/>
+          <rect x="110" y="${y}" width="${pct}" height="28" rx="5" fill="${CM[r.c]}"/>
+          <text x="104" y="${y+19}" text-anchor="end" font-size="10" font-weight="600" fill="${CM[r.c]}" font-family="Inter,sans-serif">${r.l}</text>
+          <text x="${Math.min(110+pct-5,542)}" y="${y+19}" text-anchor="end" font-size="9" font-weight="700" fill="white" font-family="Inter,sans-serif">${r.v>0?cf(r.v):'NIL'}</text>`;
+    });
+    return `<svg viewBox="0 0 570 ${H}" xmlns="http://www.w3.org/2000/svg">${o}</svg>`;
+  }
+
+  const svgElec=svgBar([{l:'Tumble',c:'t',v:c.t_epg},{l:'Green',c:'g',v:c.g_epg},{l:'Sustain.',c:'s',v:c.s_epg}]);
+  const svgStm =svgBar([{l:'Tumble',c:'t',v:c.t_scpg},{l:'Green',c:'g',v:c.g_scpg},{l:'Sustain.',c:'s',v:c.s_scpg}]);
+  const svgCap =svgBar([{l:'Tumble',c:'t',v:c.t_cap},{l:'Green',c:'g',v:c.g_cap},{l:'Sustain.',c:'s',v:c.s_cap}]);
+  const svgSav =svgBar([{l:'Tumble',c:'t',v:0},{l:'Green',c:'g',v:c.g_svm},{l:'Sustain.',c:'s',v:c.s_svm}]);
+
+  // CD = client data for JS highlight
+  const CD_t_daily_txt = cf(c.t_td,0), CD_t_mon_txt = cf(c.t_tm,0);
+  const CD_g_svd_txt = cf(c.g_svd,0), CD_g_svm_txt = cf(c.g_svm,0);
+  const CD_g_daily_txt = cf(c.g_td,0), CD_g_mon_txt = cf(c.g_tm,0);
+  const CD_s_svd_txt = cf(c.s_svd,0), CD_s_svm_txt = cf(c.s_svm,0);
+  const CD_s_daily_txt = cf(c.s_td,0), CD_s_mon_txt = cf(c.s_tm,0);
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${title} — ${cu}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--G:#1e6b3f;--G2:#2d8a52;--G3:#4aae75;--GP:#eaf5ef;--GM:#b8dfc8;--T:#c4531a;--TP:#fdf0e8;--TM:#f0b894;--S:#2563a8;--SP:#e8f0fb;--SM:#a8c4e8;--BG:#f8faf9;--BG2:#f0f5f2;--W:#fff;--ST:#5a6e62;--INK:#172420;--BD:#d0e4d8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--BG);color:var(--INK);font-size:13px;-webkit-user-select:none;user-select:none;}
+/* PRINT BAR */
+.pbar{background:var(--W);border-bottom:1.5px solid var(--BD);padding:9px 24px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.pbar-left{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.pbar-left span{font-size:.7rem;color:var(--ST);}
+.pbar-left strong{color:var(--INK);}
+.ro-tag{background:var(--TP);color:var(--T);border:1px solid var(--TM);padding:3px 10px;border-radius:999px;font-size:.62rem;font-weight:700;}
+.print-btns{display:flex;gap:7px;}
+.pbtn{padding:8px 16px;border-radius:6px;font-family:'Inter',sans-serif;font-weight:600;font-size:.72rem;cursor:pointer;border:none;display:flex;align-items:center;gap:5px;transition:all .15s;}
+.pbtn-primary{background:var(--G);color:#fff;}
+.pbtn-primary:hover{background:#145530;}
+.pbtn-sec{background:var(--BG2);color:var(--ST);border:1.5px solid var(--BD);}
+.pbtn-sec:hover{background:var(--BD);}
+/* HEADER */
+header{background:linear-gradient(135deg,#0d3320,#1e6b3f 55%,#2d8a52);padding:28px 36px 22px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");}
+.hi{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;position:relative;z-index:1;}
+.hl h1{font-family:'Playfair Display',serif;color:#fff;font-size:1.65rem;line-height:1.2;}
+.hl h1 em{color:#8fd4a8;font-style:italic;}
+.hl .hs{color:rgba(255,255,255,.55);font-size:.72rem;margin-top:4px;}
+.chips{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:3px 10px;border-radius:999px;font-size:.63rem;font-weight:500;}
+.chip.green{background:rgba(143,212,168,.2);border-color:rgba(143,212,168,.4);color:#8fd4a8;}
+/* COMPANY CARD */
+.co-section{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px;}
+.co-card{background:var(--W);border-radius:10px;border:1.5px solid var(--BD);padding:14px 16px;}
+.co-card h4{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:9px;padding-bottom:7px;border-bottom:1.5px solid var(--BG2);}
+.co-card.supplier h4{color:var(--G);}
+.co-card.customer h4{color:var(--S);}
+.co-row{display:flex;gap:8px;margin-bottom:5px;align-items:flex-start;font-size:.75rem;}
+.co-row .ico{font-size:.85rem;flex-shrink:0;margin-top:1px;}
+.co-row .lbl{color:var(--ST);width:60px;flex-shrink:0;font-size:.67rem;}
+.co-row .val{color:var(--INK);font-weight:500;line-height:1.4;}
+.ref-bar{max-width:980px;margin:0 auto 0;padding:0 20px 12px;display:flex;gap:10px;flex-wrap:wrap;}
+.ref-item{background:var(--GP);border:1px solid var(--GM);border-radius:6px;padding:5px 12px;font-size:.68rem;}
+.ref-item span{color:var(--ST);}
+.ref-item strong{color:var(--G);}
+/* CONTENT */
+.content{max-width:980px;margin:0 auto;padding:14px 20px 50px;}
+.sh{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--INK);margin-bottom:2px;margin-top:18px;}
+.sh em{color:var(--G2);font-style:italic;}
+.ss{font-size:.67rem;color:var(--ST);margin-bottom:11px;}
+/* MACHINE TABS */
+.mt-row{display:flex;gap:7px;margin-bottom:11px;}
+.mt{flex:1;padding:9px 6px;border-radius:9px;border:2px solid transparent;cursor:pointer;text-align:center;transition:all .18s;background:var(--W);box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.mt:hover{transform:translateY(-1px);}
+.mt .mi{font-size:1rem;margin-bottom:2px;}
+.mt .mn{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.mt .mv{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:600;margin-top:1px;}
+.mt .ms{font-size:.56rem;margin-top:1px;}
+.mt.t{border-color:var(--TM);background:var(--TP);}
+.mt.t .mn,.mt.t .mv,.mt.t .ms{color:var(--T);}
+.mt.g{border-color:var(--GM);background:var(--GP);}
+.mt.g .mn,.mt.g .mv,.mt.g .ms{color:var(--G);}
+.mt.s{border-color:var(--SM);background:var(--SP);}
+.mt.s .mn,.mt.s .mv,.mt.s .ms{color:var(--S);}
+.mt.active.t{border-color:var(--T);box-shadow:0 4px 16px rgba(196,83,26,.22);transform:translateY(-2px);}
+.mt.active.g{border-color:var(--G);box-shadow:0 4px 16px rgba(30,107,63,.22);transform:translateY(-2px);}
+.mt.active.s{border-color:var(--S);box-shadow:0 4px 16px rgba(37,99,168,.22);transform:translateY(-2px);}
+/* HP */
+.hp{border-radius:11px;padding:14px;margin-bottom:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;transition:all .22s;}
+.hp.t{background:linear-gradient(135deg,#fffaf6,var(--TP));border:2px solid var(--TM);}
+.hp.g{background:linear-gradient(135deg,#f5fbf7,var(--GP));border:2px solid var(--GM);}
+.hp.s{background:linear-gradient(135deg,#f5f8ff,var(--SP));border:2px solid var(--SM);}
+.hp-h{grid-column:1/-1;text-align:center;padding-bottom:9px;border-bottom:1px solid rgba(0,0,0,.06);margin-bottom:1px;}
+.hp-h h3{font-family:'Playfair Display',serif;font-size:.95rem;}
+.hp-h p{font-size:.63rem;color:var(--ST);margin-top:1px;}
+.hp.t .hp-h h3{color:var(--T);}
+.hp.g .hp-h h3{color:var(--G);}
+.hp.s .hp-h h3{color:var(--S);}
+.hp-c{text-align:center;padding:8px 5px;background:rgba(255,255,255,.8);border-radius:7px;border:1px solid rgba(0,0,0,.05);}
+.hp-c .ic{font-size:1.1rem;margin-bottom:2px;}
+.hp-c .ht{font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;}
+.hp-c .hv{font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2;}
+.hp-c .hn{font-size:.55rem;color:var(--ST);margin-top:1px;}
+.hp.t .hp-c .ht{color:var(--T);}
+.hp.g .hp-c .ht{color:var(--G);}
+.hp.s .hp-c .ht{color:var(--S);}
+/* TABLE */
+.tw{background:var(--W);border-radius:11px;border:1.5px solid var(--BD);overflow:hidden;margin-bottom:12px;}
+table{width:100%;border-collapse:collapse;font-size:.72rem;}
+thead tr{background:#172420;}
+thead th{padding:9px 11px;text-align:left;font-size:.59rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;}
+th.bh{color:rgba(255,255,255,.4);}
+.t-th{color:#f4a472;background:rgba(196,83,26,.35);}
+.g-th{color:#8fd4a8;background:rgba(30,107,63,.5);}
+.s-th{color:#a8c8f0;background:rgba(37,99,168,.3);}
+.at-t{background:var(--T)!important;color:#fff!important;}
+.at-g{background:var(--G)!important;color:#fff!important;}
+.at-s{background:var(--S)!important;color:#fff!important;}
+tbody tr{border-bottom:1px solid var(--BG2);}
+tbody tr.sr td{background:var(--BG2);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--ST);padding:6px 11px;}
+tbody td{padding:8px 11px;vertical-align:top;line-height:1.5;}
+.rl{font-weight:600;color:var(--ST);font-size:.63rem;text-transform:uppercase;letter-spacing:.3px;width:145px;}
+.ct{color:var(--T);font-weight:500;background:#fffaf7;}
+.cg{color:var(--G);font-weight:600;background:#f5fbf7;}
+.cs{color:var(--S);font-weight:500;background:#f7f9fd;}
+.ct.av{background:var(--TP)!important;border-left:3px solid var(--T);border-right:3px solid var(--T);font-weight:700;}
+.cg.av{background:var(--GP)!important;border-left:3px solid var(--G);border-right:3px solid var(--G);font-weight:700;}
+.cs.av{background:var(--SP)!important;border-left:3px solid var(--S);border-right:3px solid var(--S);font-weight:700;}
+/* CHARTS */
+.ch2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:12px;}
+.cc{background:var(--W);border-radius:11px;padding:13px;border:1.5px solid var(--BD);}
+.cc h4{font-size:.72rem;font-weight:700;color:var(--INK);margin-bottom:1px;}
+.cc p{font-size:.6rem;color:var(--ST);margin-bottom:9px;}
+.cc svg{width:100%;height:auto;}
+/* PARAMS */
+.p3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.pc{background:var(--W);border-radius:10px;padding:13px;border:1.5px solid var(--BD);transition:all .2s;}
+.pc.t.ap{border-color:var(--T);box-shadow:0 4px 14px rgba(196,83,26,.16);}
+.pc.g.ap{border-color:var(--G);box-shadow:0 4px 14px rgba(30,107,63,.16);}
+.pc.s.ap{border-color:var(--S);box-shadow:0 4px 14px rgba(37,99,168,.16);}
+.pc h4{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;padding-bottom:6px;border-bottom:1.5px solid var(--BG2);}
+.pc.t h4{color:var(--T);}
+.pc.g h4{color:var(--G);}
+.pc.s h4{color:var(--S);}
+.pr{display:flex;justify-content:space-between;padding:3px 0;font-size:.68rem;border-bottom:1px solid var(--BG2);}
+.pr:last-child{border:none;}
+.pr .pl{color:var(--ST);}
+.pr .pv{font-weight:600;color:var(--INK);}
+/* FOOTER */
+.rf{border-top:1.5px solid var(--BD);padding-top:14px;margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.rf p{font-size:.65rem;color:var(--ST);line-height:1.8;}
+.conf{display:inline-block;background:var(--GP);color:var(--G);border:1px solid var(--GM);padding:2px 9px;border-radius:999px;font-size:.6rem;font-weight:700;margin-bottom:4px;}
+.curr-note{background:linear-gradient(135deg,#fffbf0,#fff8e1);border:1px solid #f0d87a;border-radius:7px;padding:7px 12px;font-size:.65rem;color:#8a6e00;margin-bottom:12px;}
+
+/* PRINT */
+@media print{
+  body{background:#fff!important;-webkit-user-select:text!important;user-select:text!important;}
+  .pbar{display:none!important;}
+  header{-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:16px 20px 12px;}
+  .hl h1{font-size:1.3rem;}
+  .co-section{padding:10px 12px;}
+  .content{padding:10px 12px 20px;}
+  .hp{padding:10px;gap:6px;}
+  .hp-c{padding:6px 4px;}
+  table{font-size:.65rem;}
+  thead th{padding:7px 9px;}
+  tbody td{padding:6px 9px;}
+  .tw,.cc,.pc,.hp,.co-card{break-inside:avoid;page-break-inside:avoid;}
+  .ch2{grid-template-columns:1fr 1fr;}
+  @page{size:A4;margin:7mm 7mm 9mm 7mm;}
+  html,body{width:210mm;max-width:210mm;}
+  .p3{grid-template-columns:repeat(3,1fr);}
+  .mt-row{gap:5px;}
+  .mt{padding:7px 4px;}
+}
+</style>
+</head>
+<body>
+
+<!-- PRINT BAR -->
+<div class="pbar">
+  <div class="pbar-left">
+    <span class="ro-tag">🔒 Customer Copy</span>
+    <span>Ref: <strong>${ref}</strong></span>
+    <span>For: <strong>${cu}</strong></span>
+    <span>Date: <strong>${dateStr}</strong></span>
+  </div>
+  <div class="print-btns">
+    <button class="pbtn pbtn-sec" onclick="window.print()">🖨️ Print</button>
+    <button class="pbtn pbtn-primary" onclick="window.print()">📄 Save as PDF</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="hi">
+    <div class="hl">
+      <h1>🌿 <em>Dryer Technology</em> Comparison</h1>
+      <div class="hs">${title} · ${f0(c.prod)} Denims/Day Production</div>
+      <div class="chips">
+        <span class="chip">Ref: ${ref}</span>
+        <span class="chip">🔴 Tumble: ${cpg(c.t_epg)}/pcs</span>
+        <span class="chip">🟢 Green: ${cpg(c.g_epg)}/pcs</span>
+        <span class="chip">🔵 Sustain.: ${cpg(c.s_epg)}/pcs</span>
+        <span class="chip green">Green saves ${cf(c.g_svm,0)}/month</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- COMPANY + CUSTOMER CARDS -->
+<div class="co-section">
+  <div class="co-card supplier">
+    <h4>🏭 From — Supplier</h4>
+    <div class="co-row"><span class="ico">🏢</span><span class="lbl">Company</span><span class="val"><strong>${co}</strong></span></div>
+    <div class="co-row"><span class="ico">👤</span><span class="lbl">Contact</span><span class="val">${cname} · ${cdesig}</span></div>
+    <div class="co-row"><span class="ico">📞</span><span class="lbl">Phone</span><span class="val">${cphone}</span></div>
+    <div class="co-row"><span class="ico">✉️</span><span class="lbl">Email</span><span class="val">${cemail}</span></div>
+    <div class="co-row"><span class="ico">🌐</span><span class="lbl">Web</span><span class="val">${cweb}</span></div>
+    <div class="co-row"><span class="ico">📍</span><span class="lbl">Address</span><span class="val">${caddr}</span></div>
+  </div>
+  <div class="co-card customer">
+    <h4>👤 To — Customer</h4>
+    <div class="co-row"><span class="ico">🏢</span><span class="lbl">Company</span><span class="val"><strong>${cu}</strong></span></div>
+    <div class="co-row"><span class="ico">👤</span><span class="lbl">Contact</span><span class="val">${cuname} · ${cudesig}</span></div>
+    <div class="co-row"><span class="ico">📞</span><span class="lbl">Phone</span><span class="val">${cuphone}</span></div>
+    <div class="co-row"><span class="ico">✉️</span><span class="lbl">Email</span><span class="val">${cuemail}</span></div>
+    <div class="co-row"><span class="ico">📍</span><span class="lbl">Address</span><span class="val">${cuaddr}</span></div>
+  </div>
+</div>
+<div class="ref-bar">
+  <div class="ref-item"><span>Date: </span><strong>${dateStr}</strong></div>
+  <div class="ref-item"><span>Ref No.: </span><strong>${ref}</strong></div>
+  <div class="ref-item"><span>Production: </span><strong>${f0(c.prod)} Denims/Day</strong></div>
+  <div class="ref-item"><span>Working Days: </span><strong>${f0(c.days)}/Month</strong></div>
+  <div class="ref-item"><span>Tariff: </span><strong>TK ${f2(c.tariff)}/kWh</strong></div>
+  <div class="ref-item"><span>Steam: </span><strong>TK ${f2(c.sc)}/kg</strong></div>
+</div>
+
+<div class="content">
+
+  ${showCurr!=='none'?`<div class="curr-note">💱 ${currNote}</div>`:''}
+
+  <!-- MACHINE TABS -->
+  <p class="sh" style="margin-top:0">Select Machine to <em>Highlight</em></p>
+  <p class="ss">Click any tab to highlight that machine's parameters, costs, and advantages throughout the report</p>
+  <div class="mt-row">
+    <div class="mt t active" onclick="cSel('t')">
+      <div class="mi">🔴</div><div class="mn">Tumble Dryer</div>
+      <div class="mv">${cpg(c.t_epg)}</div><div class="ms">per garment</div>
+    </div>
+    <div class="mt g" onclick="cSel('g')">
+      <div class="mi">🟢</div><div class="mn">Green Dryer</div>
+      <div class="mv">${cpg(c.g_epg)}</div><div class="ms">per garment</div>
+    </div>
+    <div class="mt s" onclick="cSel('s')">
+      <div class="mi">🔵</div><div class="mn">Sustainable</div>
+      <div class="mv">${cpg(c.s_epg)}</div><div class="ms">per garment</div>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHT PANEL -->
+  <div class="hp t" id="chp">
+    <div class="hp-h">
+      <h3 id="chp_title">🔴 Tumble Dryer — Key Parameters</h3>
+      <p id="chp_sub">${t_desc}</p>
+    </div>
+    <div class="hp-c"><div class="ic">📦</div><div class="ht">Capacity/Hr</div><div class="hv" id="chp_cap">${f0(c.t_cap)}</div><div class="hn">pcs/hour</div></div>
+    <div class="hp-c"><div class="ic">⚡</div><div class="ht">Total KW</div><div class="hv" id="chp_kw">${f2(c.t_kw)}</div><div class="hn">KW load</div></div>
+    <div class="hp-c"><div class="ic">💡</div><div class="ht">Elec/Garment</div><div class="hv" id="chp_elec">${cpg(c.t_epg)}</div><div class="hn">per piece</div></div>
+    <div class="hp-c"><div class="ic">♨️</div><div class="ht">Steam/Garment</div><div class="hv" id="chp_stm">${cpg(c.t_scpg)}</div><div class="hn">per piece</div></div>
+    <div class="hp-c"><div class="ic">📅</div><div class="ht">Daily Cost</div><div class="hv" id="chp_daily">${cf(c.t_td,0)}</div><div class="hn">total/day</div></div>
+    <div class="hp-c"><div class="ic">📊</div><div class="ht">Monthly Cost</div><div class="hv" id="chp_monthly">${cf(c.t_tm,0)}</div><div class="hn">total/month</div></div>
+    <div class="hp-c"><div class="ic">💰</div><div class="ht">Daily Saving</div><div class="hv" id="chp_save_d">NIL (Baseline)</div><div class="hn">vs Tumble</div></div>
+    <div class="hp-c"><div class="ic">🏆</div><div class="ht">Monthly Saving</div><div class="hv" id="chp_save_m">NIL (Baseline)</div><div class="hn">vs Tumble</div></div>
+  </div>
+
+  <!-- FULL TABLE -->
+  <p class="sh">Full Parameter <em>Comparison</em></p>
+  <p class="ss">Electricity · Steam · Capacity · Monthly Savings</p>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th class="bh" style="width:140px">Parameter</th>
+        <th class="t-th" id="cth_t">🔴 Tumble Dryer</th>
+        <th class="g-th" id="cth_g">🟢 Green Dryer</th>
+        <th class="s-th" id="cth_s">🔵 Sustainable</th>
+      </tr></thead>
+      <tbody>
+        <tr class="sr"><td colspan="4">⚙️ Capacity</td></tr>
+        <tr><td class="rl">Daily Production</td><td class="ct av-t">${f0(c.prod)} Denims/Day</td><td class="cg av-g">${f0(c.prod)} Denims/Day</td><td class="cs av-s">${f0(c.prod)} Denims/Day</td></tr>
+        <tr><td class="rl">Capacity/Hour</td><td class="ct av-t">${f0(c.t_cap)} pcs/hr<br><small style="color:#ccc;font-size:.62rem">${t_desc}</small></td><td class="cg av-g">${f0(c.g_cap)} pcs/hr<br><small style="color:#6ec890;font-size:.62rem">${g_desc}</small></td><td class="cs av-s">${f0(c.s_cap)} pcs/hr<br><small style="color:#ccc;font-size:.62rem">${s_desc}</small></td></tr>
+        <tr class="sr"><td colspan="4">⚡ Electricity  (KW × TK/kWh ÷ pcs/hr = TK/garment)</td></tr>
+        <tr><td class="rl">Total Elec. Load</td><td class="ct av-t">${f2(c.t_kw)} KW</td><td class="cg av-g">${f2(c.g_kwb)}+${f2(c.g_kwd)}=${f2(c.g_kwt)} KW</td><td class="cs av-s">${f2(c.s_kwb)}+${f2(c.s_kwd)}=${f2(c.s_kwt)} KW</td></tr>
+        <tr><td class="rl">Cost/Hr Formula</td><td class="ct av-t">${f2(c.t_kw)}×TK${f2(c.tariff)}=TK${f2(c.t_ehr)}/hr</td><td class="cg av-g">${f2(c.g_kwt)}×TK${f2(c.tariff)}=TK${f2(c.g_ehr)}/hr</td><td class="cs av-s">${f2(c.s_kwt)}×TK${f2(c.tariff)}=TK${f2(c.s_ehr)}/hr</td></tr>
+        <tr><td class="rl">Elec. Cost/Garment</td><td class="ct av-t">${cpg(c.t_epg)}</td><td class="cg av-g">${cpg(c.g_epg)}</td><td class="cs av-s">${cpg(c.s_epg)}</td></tr>
+        <tr><td class="rl">Daily Elec. Cost</td><td class="ct av-t">${cf(c.t_ed,0)}</td><td class="cg av-g">${cf(c.g_ed,0)}</td><td class="cs av-s">${cf(c.s_ed,0)}</td></tr>
+        <tr><td class="rl">Daily Elec. Saving</td><td class="ct av-t">NIL</td><td class="cg av-g">✅ ${cf(c.g_es,0)}/Day</td><td class="cs av-s">${cf(c.s_es,0)}/Day</td></tr>
+        <tr><td class="rl">Monthly Elec. Saving</td><td class="ct av-t">NIL</td><td class="cg av-g">✅ ${cf(c.g_ems,0)}</td><td class="cs av-s">${cf(c.s_ems,0)}</td></tr>
+        <tr class="sr"><td colspan="4">♨️ Steam  (kg/hr ÷ pcs/hr × TK/kg = TK/garment)</td></tr>
+        <tr><td class="rl">Steam/Hour</td><td class="ct av-t">${f0(c.t_stm)} kg/hr</td><td class="cg av-g">${f0(c.g_stmb)}+${f0(c.g_stmd)}=${f0(c.g_stm)} kg/hr</td><td class="cs av-s">${f0(c.s_stm)} kg/hr</td></tr>
+        <tr><td class="rl">Steam/Garment</td><td class="ct av-t">${f2(c.t_spg)} kg</td><td class="cg av-g">${f2(c.g_spg)} kg</td><td class="cs av-s">${f2(c.s_spg)} kg</td></tr>
+        <tr><td class="rl">Steam Cost/Garment</td><td class="ct av-t">${cpg(c.t_scpg)}</td><td class="cg av-g">${cpg(c.g_scpg)}</td><td class="cs av-s">${cpg(c.s_scpg)}</td></tr>
+        <tr><td class="rl">Daily Steam Cost</td><td class="ct av-t">${cf(c.t_sd,0)}</td><td class="cg av-g">${cf(c.g_sd,0)}</td><td class="cs av-s">${cf(c.s_sd,0)}</td></tr>
+        <tr><td class="rl">Daily Steam Saving</td><td class="ct av-t">NIL</td><td class="cg av-g">✅ ${cf(c.g_ss,0)}/Day</td><td class="cs av-s">${cf(c.s_ss,0)}/Day</td></tr>
+        <tr><td class="rl">Monthly Steam Saving</td><td class="ct av-t">NIL</td><td class="cg av-g">✅ ${cf(c.g_sms,0)}</td><td class="cs av-s">${cf(c.s_sms,0)}</td></tr>
+        <tr class="sr"><td colspan="4">💰 Total Monthly Savings vs Tumble Dryer (${f0(c.days)} Working Days)</td></tr>
+        <tr><td class="rl">Combined Saving</td><td class="ct av-t" style="font-weight:700">BASELINE</td><td class="cg av-g" style="font-size:.8rem;font-weight:800">🏆 ${cf(c.g_svm,0)}</td><td class="cs av-s" style="font-weight:700">${cf(c.s_svm,0)}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CHARTS -->
+  <p class="sh">Visual <em>Analysis</em></p>
+  <p class="ss">Active machine tab is highlighted in charts</p>
+  <div class="ch2">
+    <div class="cc"><h4>Electricity Cost / Garment</h4><p>Lower is better</p>${svgElec}</div>
+    <div class="cc"><h4>Steam Cost / Garment</h4><p>Lower is better</p>${svgStm}</div>
+    <div class="cc"><h4>Throughput (pcs/hr)</h4><p>Higher is better</p>${svgCap}</div>
+    <div class="cc"><h4>Monthly Savings vs Tumble</h4><p>${f0(c.days)} working days</p>${svgSav}</div>
+  </div>
+
+  <!-- MACHINE PARAMS -->
+  <p class="sh">Machine <em>Parameters</em></p>
+  <p class="ss">Highlighted card = selected machine tab</p>
+  <div class="p3">
+    <div class="pc t ap" id="cpc_t">
+      <h4>🔴 Tumble Dryer</h4>
+      <div class="pr"><span class="pl">Description</span><span class="pv">${t_desc}</span></div>
+      <div class="pr"><span class="pl">Capacity/Hr</span><span class="pv">${f0(c.t_cap)} pcs</span></div>
+      <div class="pr"><span class="pl">Elec. Load</span><span class="pv">${f2(c.t_kw)} KW</span></div>
+      <div class="pr"><span class="pl">Steam/Hr</span><span class="pv">${f0(c.t_stm)} kg/hr</span></div>
+      <div class="pr"><span class="pl">Daily Cost</span><span class="pv">${cf(c.t_td,0)}</span></div>
+      <div class="pr"><span class="pl">Monthly Cost</span><span class="pv">${cf(c.t_tm,0)}</span></div>
+    </div>
+    <div class="pc g" id="cpc_g">
+      <h4>🟢 Green Dryer</h4>
+      <div class="pr"><span class="pl">Description</span><span class="pv">${g_desc}</span></div>
+      <div class="pr"><span class="pl">Capacity/Hr</span><span class="pv">${f0(c.g_cap)} pcs</span></div>
+      <div class="pr"><span class="pl">Load (base+dry)</span><span class="pv">${f2(c.g_kwb)}+${f2(c.g_kwd)}=${f2(c.g_kwt)} KW</span></div>
+      <div class="pr"><span class="pl">Steam/Hr</span><span class="pv">${f0(c.g_stmb)}+${f0(c.g_stmd)}=${f0(c.g_stm)} kg/hr</span></div>
+      <div class="pr"><span class="pl">Monthly Saving</span><span class="pv" style="color:var(--G);font-weight:700">${cf(c.g_svm,0)}</span></div>
+    </div>
+    <div class="pc s" id="cpc_s">
+      <h4>🔵 Sustainable Dryer</h4>
+      <div class="pr"><span class="pl">Description</span><span class="pv">${s_desc}</span></div>
+      <div class="pr"><span class="pl">Capacity/Hr</span><span class="pv">${f0(c.s_cap)} pcs</span></div>
+      <div class="pr"><span class="pl">Load (base+dry)</span><span class="pv">${f2(c.s_kwb)}+${f2(c.s_kwd)}=${f2(c.s_kwt)} KW</span></div>
+      <div class="pr"><span class="pl">Steam/Hr</span><span class="pv">${f0(c.s_stm)} kg/hr</span></div>
+      <div class="pr"><span class="pl">Monthly Saving</span><span class="pv" style="color:var(--S);font-weight:700">${cf(c.s_svm,0)}</span></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="rf">
+    <div>
+      <span class="conf">📋 CONFIDENTIAL PROPOSAL</span>
+      <p>Prepared by: <strong>${co}</strong><br>
+      Contact: <strong>${cname}</strong> (${cdesig})<br>
+      📞 ${cphone} · ✉️ ${cemail}<br>
+      🌐 ${cweb} · 📍 ${caddr}</p>
+    </div>
+    <div style="text-align:right">
+      <p>For: <strong>${cu}</strong> · Attn: ${cuname}<br>
+      Ref: <strong>${ref}</strong> · Date: ${dateStr}<br>
+      Tariff: TK ${f2(c.tariff)}/kWh · Steam: TK ${f2(c.sc)}/kg<br>
+      ${notes}</p>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+var cM='t';
+var CDB={
+  t:{title:'🔴 Tumble Dryer — Key Parameters',sub:'${t_desc.replace(/'/g,"\\'")}',cap:'${f0(c.t_cap)}',kw:'${f2(c.t_kw)}',elec:'${cpg(c.t_epg)}',stm:'${cpg(c.t_scpg)}',daily:'${CD_t_daily_txt}',monthly:'${CD_t_mon_txt}',save_d:'NIL (Baseline)',save_m:'NIL (Baseline)'},
+  g:{title:'🟢 Green Dryer — Key Parameters',sub:'${g_desc.replace(/'/g,"\\'")}',cap:'${f0(c.g_cap)}',kw:'${f2(c.g_kwt)}',elec:'${cpg(c.g_epg)}',stm:'${cpg(c.g_scpg)}',daily:'${CD_g_daily_txt}',monthly:'${CD_g_mon_txt}',save_d:'✅ ${CD_g_svd_txt}/day',save_m:'🏆 ${CD_g_svm_txt}'},
+  s:{title:'🔵 Sustainable Dryer — Key Parameters',sub:'${s_desc.replace(/'/g,"\\'")}',cap:'${f0(c.s_cap)}',kw:'${f2(c.s_kwt)}',elec:'${cpg(c.s_epg)}',stm:'${cpg(c.s_scpg)}',daily:'${CD_s_daily_txt}',monthly:'${CD_s_mon_txt}',save_d:'${CD_s_svd_txt}/day',save_m:'${CD_s_svm_txt}'}
+};
+function cst(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+function cSel(m){
+  cM=m;
+  document.querySelectorAll('.mt').forEach(function(e){e.classList.remove('active');});
+  document.querySelector('.mt.'+m).classList.add('active');
+  document.getElementById('chp').className='hp '+m;
+  var d=CDB[m];
+  cst('chp_title',d.title);cst('chp_sub',d.sub);cst('chp_cap',d.cap);cst('chp_kw',d.kw);
+  cst('chp_elec',d.elec);cst('chp_stm',d.stm);cst('chp_daily',d.daily);cst('chp_monthly',d.monthly);
+  cst('chp_save_d',d.save_d);cst('chp_save_m',d.save_m);
+  ['t','g','s'].forEach(function(x){
+    var th=document.getElementById('cth_'+x);
+    if(th)th.className=(x===m?'at-'+m:(x==='t'?'t-th':x==='g'?'g-th':'s-th'));
+    document.querySelectorAll('.av-'+x).forEach(function(el){el.classList.toggle('av',x===m);});
+    var pc=document.getElementById('cpc_'+x);
+    if(pc)pc.classList.toggle('ap',x===m);
+  });
+}
+<\/script>
+</body>
+</html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const safe=cu.replace(/[^a-z0-9]/gi,'_').toLowerCase();
+  a.href=url; a.download=`Dryer_Report_${safe}_${ref}_${new Date().toISOString().slice(0,10)}.html`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Fetch live exchange rates
+async function fetchLiveRates() {
+  try {
+    const response = await fetch('https://api.exchangerate.host/latest?base=INR&symbols=BDT,USD,EUR');
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    if (data.success && data.rates) {
+      const { BDT, USD, EUR } = data.rates;
+      // Update input fields (user can still edit afterwards)
+      document.getElementById('i_inr_to_tk').value = BDT;
+      document.getElementById('i_inr_to_usd').value = USD;
+      document.getElementById('i_inr_to_eur').value = EUR;
+      // Trigger update to reflect new rates
+      update();
+    }
+  } catch (err) {
+    console.warn('Failed to fetch live rates:', err);
+    // Keep existing values (user-set or defaults)
+  }
+}
+
+// Fetch on load and repeat every hour
+fetchLiveRates();
+setInterval(fetchLiveRates, 3600000);
+// ── INIT ─────────────────────────────────────────────────
+document.getElementById('i_date').value=new Date().toISOString().slice(0,10);
+update();
+selMachine('t',true);
+</script>
+</body>
+</html>
